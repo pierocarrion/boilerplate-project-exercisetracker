@@ -26,8 +26,8 @@ app.post('/api/users', (req, res) =>{
   const username = req.body.username
   const _id = users.length
   const user = {
-    _id,
     username,
+    _id,
   }
   users.push(user)
   res.json(user)
@@ -46,15 +46,15 @@ app.post('/api/users/:_id/exercises', (req, res) =>{
   const username = users.find(({_id})=> _id === _id)?.username
 
   const exercise = {
-    _id,
     description,
     duration,
-    date
+    date,
+    _id,
   }
 
   exercises.push(exercise)
 
-  res.json({ ...exercise, username})
+  res.json({ username, ...exercise })
 })
 
 app.get('/api/users/:_id/logs/:from?/:to?/:limit?', (req,res) =>{
