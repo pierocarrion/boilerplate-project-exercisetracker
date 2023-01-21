@@ -26,8 +26,8 @@ app.post('/api/users', (req, res) =>{
   const username = req.body.username
   const _id = users.length
   const user = {
-    username,
-    _id,
+  _id: _id.toString(),
+  username: username
   }
   users.push(user)
   res.json(user)
@@ -39,22 +39,24 @@ app.get('/api/users', (req,res) =>{
 
 app.post('/api/users/:_id/exercises', (req, res) =>{
   const description = req.body.description
-  const duration = req.body.duration
-  const date = req.body?.date || new Date()
+  const duration = Number(req.body.duration)
+  const date = req.body?.date
   const _id = req.params._id
 
   const username = users.find(({_id})=> _id === _id)?.username
 
   const exercise = {
+    username,
     description,
     duration,
-    date,
     _id,
+    date : date ? new Date(date).toDateString() : new Date().toDateString(),
   }
 
   exercises.push(exercise)
 
-  res.json({ username, ...exercise })
+  console.log('🚀 ~ file: index.js:59 ~ app.post ~ { username, ...exercise }', exercise)
+  res.json(exercise)
 })
 
 app.get('/api/users/:_id/logs/:from?/:to?/:limit?', (req,res) =>{
@@ -68,7 +70,7 @@ app.get('/api/users/:_id/logs/:from?/:to?/:limit?', (req,res) =>{
 
   const log = exercises
     .filter(({_id, date})=> _id === id && date >= from && date <= to)
-    .slice(0, limit)
+
     .map(({description, duration, date}) => ({
       description,
       duration: Number(duration),
@@ -79,7 +81,7 @@ app.get('/api/users/:_id/logs/:from?/:to?/:limit?', (req,res) =>{
     username,
     count: log.length,
     _id: id,
-    log
+    log:     log.slice(0, limit)
   }
   
   res.json(result)
